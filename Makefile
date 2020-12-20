@@ -4,7 +4,7 @@ DOCKER_IMAGE_NAME = sneakers
 
 
 # install dependencies
-.PHONY: install dependencies
+.PHONY: install-dependencies
 install-dependencies:
 	cp bootstrap.req.txt requirements.txt
 	docker build -t $(DOCKER_IMAGE_NAME) .
