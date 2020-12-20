@@ -2,3 +2,4 @@ requests
 numpy
 scipy
 pandas
+loguru
