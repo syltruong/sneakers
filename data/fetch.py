@@ -1,6 +1,6 @@
 import pathlib
 from math import ceil
-
+from loguru import logger
 import pandas as pd
 import requests
 
@@ -34,8 +34,11 @@ def main(count_limit: int = 200) -> pd.DataFrame:
 
     list_df = []
 
-    for page in range(ceil(count / limit)):
-        print(page)
+    n_pages = ceil(count / limit)
+    
+    for page in range(n_pages):
+        if page % 10 == 0:
+            logger.info(f"Page {page}/{n_pages - 1}")
         response = requests.get(
             url=BASE_URL,
             params={
@@ -48,6 +51,8 @@ def main(count_limit: int = 200) -> pd.DataFrame:
             pd.DataFrame.from_records(response.json()["results"])
         )
     
+    logger.info(f"Page {page}/{n_pages - 1}")
+
     df = pd.concat(list_df)
     return df
 
