@@ -4,7 +4,8 @@ from math import ceil
 import pandas as pd
 import requests
 
-from data.config import BASE_URL
+from data.config import BASE_URL, DATA_CSV_NAME
+
 
 def main(count_limit: int = 200) -> pd.DataFrame:
     """
@@ -53,4 +54,4 @@ def main(count_limit: int = 200) -> pd.DataFrame:
 
 if __name__ == "__main__":
     df = main(count_limit=40000)
-    df.to_csv(pathlib.Path(__file__).parent / "data.csv", index=False)
+    df.to_csv(pathlib.Path(__file__).parent / DATA_CSV_NAME , index=False)
