@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 BASE_URL = "https://api.thesneakerdatabase.com/v1/sneakers"
 DATA_CSV_NAME = "data.csv"
+IMAGES_DIR_NAME = "images"
 NEW_PRODUCT_PLACEHOLDER_IMAGE_NAME = "New-Product-Placeholder-Default.jpg"
 SMALL_IMAGE_URL_KEY = "smallImageUrl"
 

@@ -11,7 +11,7 @@ import wget
 from data.config import BASE_URL, DATA_CSV_NAME, NEW_PRODUCT_PLACEHOLDER_IMAGE_NAME, SMALL_IMAGE_URL_KEY, DataSchema
 
 
-def download_csv_data(count_limit: int = 200) -> pd.DataFrame:
+def get_csv_data(count_limit: int = 200) -> pd.DataFrame:
     """
     Download sneaker data from the API
 
@@ -67,7 +67,7 @@ def load_data_from_csv(csv_path: Union[str, Path], schema: DataSchema = DataSche
     return df
 
 
-def download_image_data(df: pd.DataFrame, output_dir: Path, schema: DataSchema = DataSchema()):
+def download_images(df: pd.DataFrame, output_dir: Path, schema: DataSchema = DataSchema()):
 
     output_dir.mkdir(parents=True, exist_ok=True)
     
@@ -89,6 +89,8 @@ def download_image_data(df: pd.DataFrame, output_dir: Path, schema: DataSchema =
             continue        
 
         output_path = output_dir / f"{id}.{extension}"
+        if output_path.exists():
+            output_path.unlink()
         try:
             wget.download(image_url, output_path.as_posix())
         except Exception as e:
@@ -107,8 +109,3 @@ def get_file_extension_from_url(url: str) -> Union[str, None]:
         return m.group(1)
     else:
         return None
-
-
-if __name__ == "__main__":
-    df = download_csv_data(count_limit=40000)
-    df.to_csv(Path(__file__).parent / DATA_CSV_NAME , index=False)
