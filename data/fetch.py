@@ -1,13 +1,17 @@
-import pathlib
+import re
+from pathlib import Path
+from typing import Union
 from math import ceil
 from loguru import logger
 import pandas as pd
 import requests
+import ast
+import wget
 
-from data.config import BASE_URL, DATA_CSV_NAME
+from data.config import BASE_URL, DATA_CSV_NAME, NEW_PRODUCT_PLACEHOLDER_IMAGE_NAME, SMALL_IMAGE_URL_KEY, DataSchema
 
 
-def main(count_limit: int = 200) -> pd.DataFrame:
+def download_csv_data(count_limit: int = 200) -> pd.DataFrame:
     """
     Download sneaker data from the API
 
@@ -57,6 +61,54 @@ def main(count_limit: int = 200) -> pd.DataFrame:
     return df
 
 
+def load_data_from_csv(csv_path: Union[str, Path], schema: DataSchema = DataSchema()) -> pd.DataFrame:
+    df = pd.read_csv(csv_path)
+    df[schema.media] = df[schema.media].apply(ast.literal_eval)
+    return df
+
+
+def download_image_data(df: pd.DataFrame, output_dir: Path, schema: DataSchema = DataSchema()):
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    for i, row in df.iterrows():
+        if i % 50 == 0:
+            logger.info(f"Procesing row {i}/{len(df)}")
+
+        id = row[schema.id]
+        image_url = row[schema.media][SMALL_IMAGE_URL_KEY]
+        
+        if image_url is None:
+            # logger.debug(f"Invalid image found for {image_url} | {id}")
+            continue
+        
+        extension = get_file_extension_from_url(image_url)
+
+        if (extension is None) or (NEW_PRODUCT_PLACEHOLDER_IMAGE_NAME in image_url):
+            # logger.debug(f"Invalid image found for {image_url} | {id}")
+            continue        
+
+        output_path = output_dir / f"{id}.{extension}"
+        try:
+            wget.download(image_url, output_path.as_posix())
+        except Exception as e:
+            logger.warning(f"{id} | {image_url}")
+            logger.warning(e)
+            continue
+
+
+def get_file_extension_from_url(url: str) -> Union[str, None]:
+
+    pattern = r"\.([a-zA-Z]+)\?"
+
+    m = re.search(pattern, url)
+    
+    if m is not None:
+        return m.group(1)
+    else:
+        return None
+
+
 if __name__ == "__main__":
-    df = main(count_limit=40000)
-    df.to_csv(pathlib.Path(__file__).parent / DATA_CSV_NAME , index=False)
+    df = download_csv_data(count_limit=40000)
+    df.to_csv(Path(__file__).parent / DATA_CSV_NAME , index=False)
