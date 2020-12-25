@@ -4,3 +4,6 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 RUN pip freeze > requirements.txt
+
+COPY . /app/sneakers/
+ENV PYTHONPATH "${PYTHONPATH}:/app/sneakers"
