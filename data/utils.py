@@ -71,7 +71,8 @@ def download_images(
     df: pd.DataFrame, output_dir: Path, schema: DataSchema = DataSchema()
 ):
 
-    output_dir.mkdir(parents=True, exist_ok=True)
+    if not output_dir.exists():
+        raise FileNotFoundError(f"{output_dir} does not exist.")
 
     for i, row in df.iterrows():
         if i % 50 == 0:

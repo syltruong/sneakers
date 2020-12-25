@@ -12,4 +12,7 @@ if __name__ == "__main__":
     directory = Path(args.output_dir)
     df = load_data_from_csv(directory / DATA_CSV_NAME)
 
-    download_images(df, output_dir=directory / IMAGES_DIR_NAME)
+    images_output_dir = directory / IMAGES_DIR_NAME
+    images_output_dir.mkdir(exist_ok=True)
+
+    download_images(df, output_dir=images_output_dir)

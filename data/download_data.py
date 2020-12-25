@@ -10,7 +10,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    if not output_dir.exists():
+        raise FileNotFoundError(f"{output_dir} does not exist.")
 
     df = get_csv_data(count_limit=40000)
     df.to_csv(output_dir / DATA_CSV_NAME, index=False)
