@@ -7,3 +7,4 @@ ipykernel
 wget
 pylint
 black
+pytorch-lightning-bolts
