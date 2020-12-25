@@ -4,9 +4,11 @@ scipy
 pandas
 loguru
 ipykernel
+ipywidgets
 wget
 pylint
 black
 pytorch-lightning-bolts
 torchvision
 Pillow
+opencv-python
