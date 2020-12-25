@@ -33,6 +33,7 @@ parso==0.7.1
 pathspec==0.8.1
 pexpect==4.8.0
 pickleshare==0.7.5
+Pillow==8.0.1
 prompt-toolkit==3.0.8
 protobuf==3.14.0
 ptyprocess==0.6.0
@@ -56,6 +57,7 @@ tensorboard==2.4.0
 tensorboard-plugin-wit==1.7.0
 toml==0.10.2
 torch==1.7.1
+torchvision==0.8.2
 tornado==6.1
 tqdm==4.54.1
 traitlets==5.0.5

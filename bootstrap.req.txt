@@ -8,3 +8,5 @@ wget
 pylint
 black
 pytorch-lightning-bolts
+torchvision
+Pillow
