@@ -9,7 +9,7 @@ SMALL_IMAGE_URL_KEY = "smallImageUrl"
 
 @dataclass
 class DataSchema:
-    id: str = "id"    
+    id: str = "id"
     brand: str = "brand"
     colorway: str = "colorway"
     gender: str = "gender"

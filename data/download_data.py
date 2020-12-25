@@ -1,8 +1,8 @@
 import argparse
 from pathlib import Path
+
 from data.config import DATA_CSV_NAME
 from data.utils import get_csv_data
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -12,6 +12,5 @@ if __name__ == "__main__":
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-
     df = get_csv_data(count_limit=40000)
-    df.to_csv(output_dir / DATA_CSV_NAME , index=False)
+    df.to_csv(output_dir / DATA_CSV_NAME, index=False)
