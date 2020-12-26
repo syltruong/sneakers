@@ -1,0 +1,15 @@
+FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+
+RUN apt-get update && install -y --no-install-recommends \
+    python3.9.1 \
+    ffmpeg \
+    libsm6 \
+    libxext6
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+RUN pip freeze > requirements.txt
+
+COPY . /app/sneakers/
+ENV PYTHONPATH "${PYTHONPATH}:/app/sneakers"
