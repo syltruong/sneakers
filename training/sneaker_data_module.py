@@ -12,6 +12,27 @@ class SneakerDataModule(pl.LightningDataModule):
     def __init__(
         self, image_folder: Path, batch_size: int, split: float = 0.8, seed: int = 1337
     ):
+        """
+        DataModule for sneakers dataset
+
+        Parameters
+        ----------
+        image_folder : Path
+            Path to the root image folder
+            The dir structure needs to be as follows
+                image_folder/
+                    some_directory/
+                        image1.png
+                        image2.png
+                        etc.
+        batch_size : int
+            Batch size
+        split : float, optional
+            Fraction of training samples, by default 0.8
+        seed : int, optional
+            splitting seed, by default 1337
+        """
+
         super().__init__()
         self.image_folder = image_folder
         self.batch_size = batch_size
