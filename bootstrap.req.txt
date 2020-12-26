@@ -8,7 +8,7 @@ ipywidgets
 wget
 pylint
 black
-pytorch-lightning-bolts
+pytorch-lightning-bolts==0.2.6rc1
 torchvision
 Pillow
 opencv-python
