@@ -5,6 +5,7 @@ RUN apt-get install ffmpeg libsm6 libxext6  -y
 
 COPY requirements.txt .
 
+RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip freeze > requirements.txt
 
