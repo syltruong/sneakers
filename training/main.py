@@ -13,7 +13,6 @@ from training.sneaker_data_module import SneakerDataModule
 def main():
 
     parser = ArgumentParser()
-
     parser.add_argument(
         "--data_dir", type=str, required=True, help="path to the folder of images"
     )
@@ -27,6 +26,7 @@ def main():
     parser.add_argument(
         "--gpus", type=int, default=0, required=True, help="Number of GPUs"
     )
+    parser.add_argument("--max_epochs", default=100, type=int, help="number of total epochs to run")
 
     args = parser.parse_args()
 
@@ -37,9 +37,16 @@ def main():
     model = SimCLR(
         num_samples=dm.num_samples,
         batch_size=dm.batch_size,
+        max_epochs=args.max_epochs,
         gpus=args.gpus,
         dataset="sneakers",
     )
 
-    trainer = pl.Trainer()
+    trainer = pl.Trainer(
+        checkpoint_callback=True,  # configures a default checkpointing callback
+        max_epochs=args.max_epochs,
+        gpus=args.gpus,
+        accelerator='dp' if args.gpus > 1 else None,
+    )
+
     trainer.fit(model, dm)
