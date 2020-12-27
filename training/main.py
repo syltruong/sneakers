@@ -17,6 +17,9 @@ def main():
         "--data_dir", type=str, required=True, help="path to the folder of images"
     )
     parser.add_argument(
+        "--log_dir", type=str, required=True, help="output training logging dir"
+    ) 
+    parser.add_argument(
         "--input_height",
         type=int,
         required=True,
@@ -26,11 +29,14 @@ def main():
     parser.add_argument(
         "--gpus", type=int, default=0, required=True, help="Number of GPUs"
     )
+    parser.add_argument(
+        "--num_workers", type=int, default=0, required=True, help="Number of dataloader workers"
+    )
     parser.add_argument("--max_epochs", default=100, type=int, help="number of total epochs to run")
 
     args = parser.parse_args()
 
-    dm = SneakerDataModule(image_folder=args.data_dir, batch_size=args.batch_size)
+    dm = SneakerDataModule(image_folder=args.data_dir, batch_size=args.batch_size, num_workers=args.num_workers)
     dm.train_transforms = SimCLRTrainDataTransform(args.input_height)
     dm.val_transforms = SimCLREvalDataTransform(args.input_height)
 
@@ -42,11 +48,19 @@ def main():
         dataset="sneakers",
     )
 
+    # TODO set the logger folder
+    # Warning message is "Missing logger folder: /lightning_logs"
     trainer = pl.Trainer(
+        default_root_dir=args.log_dir,
         checkpoint_callback=True,  # configures a default checkpointing callback
         max_epochs=args.max_epochs,
         gpus=args.gpus,
-        accelerator='dp' if args.gpus > 1 else None,
+        accelerator='ddp' if args.gpus > 1 else None,
+        enable_pl_optimizer=True if args.gpus > 1 else False,
     )
 
     trainer.fit(model, dm)
+
+
+if __name__ == "__main__":
+    main()

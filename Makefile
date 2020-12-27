@@ -2,7 +2,9 @@ SHELL := /bin/bash
 
 DOCKER_IMAGE_NAME = sneakers
 DOCKER_GPU_IMAGE_NAME = sneakers-gpu
-PATH_TO_DATA_DIR = /Users/struong/perso/data/sneakers
+#PATH_TO_DATA_DIR = /Users/struong/perso/data/sneakers
+PATH_TO_DATA_DIR = /home/struong/data/sneakers
+PATH_TO_LOG_DIR = /home/struong/project/sneakers
 
 # install dependencies
 .PHONY: install-dependencies
@@ -37,3 +39,24 @@ download-sneakers-images:
 	docker run \
 		--mount type=bind,source="$(PATH_TO_DATA_DIR)",target=/data \
 		$(DOCKER_IMAGE_NAME) python -m data.download_images --output_dir /data
+
+
+# refer to https://github.com/pytorch/pytorch/issues/2244
+# increasing shared memory size in `docker run` as dataloader workers depend on this
+.PHONY: train-simclr-gpu
+train-simclr-gpu:
+	docker build -f Dockerfile.gpu -t $(DOCKER_GPU_IMAGE_NAME) .
+	docker run \
+		-u `id -u`:`id -g` \
+		--gpus all \
+		--shm-size 16G \
+		--mount type=bind,source="$(PATH_TO_DATA_DIR)",target=/data \
+		--mount type=bind,source="$(PATH_TO_LOG_DIR)",target=/logs \
+		$(DOCKER_GPU_IMAGE_NAME) python -m training.main \
+			--data_dir /data \
+			--log_dir /logs \
+			--input_height 64 \
+			--batch_size 512 \
+			--gpus 8 \
+			--num_workers 48 \
+			--max_epochs 100

@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 
 class SneakerDataModule(pl.LightningDataModule):
     def __init__(
-        self, image_folder: Path, batch_size: int, split: float = 0.8, seed: int = 1337
+        self, image_folder: Path, batch_size: int, num_workers: int = 0, split: float = 0.8, seed: int = 1337
     ):
         """
         DataModule for sneakers dataset
@@ -36,6 +36,7 @@ class SneakerDataModule(pl.LightningDataModule):
         super().__init__()
         self.image_folder = image_folder
         self.batch_size = batch_size
+        self.num_workers = num_workers
 
         len_dataset = len(datasets.ImageFolder(image_folder))
         self.len_train = int(split * len_dataset)
@@ -62,7 +63,7 @@ class SneakerDataModule(pl.LightningDataModule):
             generator=torch.Generator().manual_seed(self.seed),
         )
 
-        return DataLoader(dataset=dataset_train, batch_size=self.batch_size)
+        return DataLoader(dataset=dataset_train, batch_size=self.batch_size, num_workers=self.num_workers)
 
     def val_dataloader(self):
         transforms = (
@@ -79,4 +80,4 @@ class SneakerDataModule(pl.LightningDataModule):
             generator=torch.Generator().manual_seed(self.seed),
         )
 
-        return DataLoader(dataset=dataset_val, batch_size=self.batch_size)
+        return DataLoader(dataset=dataset_val, batch_size=self.batch_size, num_workers=self.num_workers)
