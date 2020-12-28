@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ModelCheckpoint
 from pl_bolts.models.self_supervised import SimCLR
 from pl_bolts.models.self_supervised.simclr.transforms import (
     SimCLREvalDataTransform,
@@ -56,11 +57,20 @@ def main():
         dataset="sneakers",
     )
 
+    model_checkpoint_callback = ModelCheckpoint(
+        monitor="val_loss",
+        save_last=True,
+        save_top_k=-1,
+        period=10,
+        filename='{epoch}-{val_loss:.2f}-{step}'
+    )
+
     # TODO set the logger folder
     # Warning message is "Missing logger folder: /lightning_logs"
     trainer = pl.Trainer(
         default_root_dir=args.log_dir,
-        checkpoint_callback=True,  # configures a default checkpointing callback
+        callbacks = [model_checkpoint_callback],
+        # checkpoint_callback=True,  # configures a default checkpointing callback
         max_epochs=args.max_epochs,
         gpus=args.gpus,
         accelerator='ddp' if args.gpus > 1 else None,
