@@ -61,3 +61,12 @@ train-simclr-gpu:
 			--gpus 8 \
 			--num_workers 48 \
 			--max_epochs 100
+
+
+.PHONY: tensorboard
+tensorboard:
+	docker build -t $(DOCKER_IMAGE_NAME) .
+	docker run \
+		--mount type=bind,source="$(PATH_TO_LOG_DIR)",target=/logs \
+		-p 6006:6006 \
+		$(DOCKER_IMAGE_NAME) tensorboard --logdir /logs --bind_all
