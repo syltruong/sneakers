@@ -56,7 +56,8 @@ train-simclr-gpu:
 			--data_dir /data \
 			--log_dir /logs \
 			--input_height 64 \
-			--batch_size 512 \
+			--batch_size 64 \
+			--learning_rate 1e-2 \
 			--gpus 8 \
 			--num_workers 48 \
 			--max_epochs 100

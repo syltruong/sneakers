@@ -20,6 +20,13 @@ def main():
         "--log_dir", type=str, required=True, help="output training logging dir"
     ) 
     parser.add_argument(
+        "--learning_rate",
+        type=float,
+        required=True,
+        default=1e-3,
+        help="learning rate"
+    )
+    parser.add_argument(
         "--input_height",
         type=int,
         required=True,
@@ -43,6 +50,7 @@ def main():
     model = SimCLR(
         num_samples=dm.num_samples,
         batch_size=dm.batch_size,
+        learning_rate=args.learning_rate,
         max_epochs=args.max_epochs,
         gpus=args.gpus,
         dataset="sneakers",
