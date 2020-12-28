@@ -6,6 +6,7 @@ DOCKER_GPU_IMAGE_NAME = sneakers-gpu
 PATH_TO_DATA_DIR = /home/struong/data/sneakers
 PATH_TO_LOG_DIR = /home/struong/project/sneakers
 
+
 # install dependencies
 .PHONY: install-dependencies
 install-dependencies:
